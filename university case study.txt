@@ -1,0 +1,119 @@
+CREATE DATABASE university;
+USE university;
+
+CREATE TABLE CAMPUS(
+ campus_name VARCHAR(20) PRIMARY KEY,
+ campus_add VARCHAR(50),
+ distance int,
+ bus_no VARCHAR(50)
+ );
+
+ 
+ CREATE TABLE CLUB(
+ club_name VARCHAR(50) PRIMARY KEY,
+ campus_name VARCHAR(50) NOT NULL, 
+ club_bui VARCHAR(20),
+ club_pno int,
+ FOREIGN KEY(campus_name) REFERENCES CAMPUS(campus_name)
+ );
+
+ 
+ CREATE TABLE SPORT(
+ sport_name VARCHAR(50) PRIMARY KEY,
+ club_name VARCHAR(50),
+ FOREIGN KEY(club_name) REFERENCES CLUB(club_name)
+ );
+ 
+ CREATE TABLE FACULTY(
+ fac_name VARCHAR(50) PRIMARY KEY,
+ dean_name VARCHAR(100),
+ fac_build VARCHAR(20)
+ );
+ 
+
+ 
+ CREATE TABLE SCHOOL(
+ scl_name VARCHAR(50) PRIMARY KEY,
+ fac_name VARCHAR(20),
+ campus_name VARCHAR(50),
+ scl_build VARCHAR(50),
+ FOREIGN KEY (fac_name) REFERENCES FACULTY(fac_name),
+ FOREIGN KEY (campus_name) REFERENCES CAMPUS(campus_name)
+ );
+ 
+CREATE TABLE COMMITTEE(
+com_title VARCHAR(50) PRIMARY KEY,
+fac_name VARCHAR(20) ,
+meeting_frequency VARCHAR(50),
+FOREIGN KEY (fac_name) REFERENCES FACULTY(fac_name) 
+);
+
+CREATE TABLE LECTURER(
+staff_id INT PRIMARY KEY,
+scl_name VARCHAR(50),
+sup_id INT ,
+lec_name VARCHAR(20),
+lec_title VARCHAR(20),
+off_room VARCHAR(20),
+FOREIGN KEY (scl_name) REFERENCES SCHOOL(scl_name)
+);
+USE UNIVERSITY;
+
+CREATE TABLE COMMITTEE_LECTURER(
+staff_id INT,
+com_title VARCHAR(50),
+fac_name VARCHAR(50),
+FOREIGN KEY (staff_id) references LECTURER (staff_id),
+FOREIGN KEY (com_title) references COMMITTEE (com_title),
+FOREIGN KEY (fac_name) references FACULTY (fac_name)
+);
+
+CREATE TABLE PROGRAMME (
+pro_code CHAR(10) PRIMARY KEY,
+scl_name VARCHAR(50),
+pro_title VARCHAR(50),
+pro_level VARCHAR(50),
+pro_length VARCHAR(50),
+FOREIGN KEY (pro_code) REFERENCES SCHOOL(scl_name)
+);
+
+CREATE TABLE STUDENT(
+stu_id INT PRIMARY KEY,
+pro_code CHAR(10),
+stu_name VARCHAR(50),
+stu_birthday date,
+year_enrolled INT,
+FOREIGN KEY (pro_code) REFERENCES PROGRAMME (pro_code)
+);
+
+CREATE TABLE COURSE(
+cou_code CHAR(10) PRIMARY KEY,
+pro_code CHAR(10),
+cou_title VARCHAR(20),
+FOREIGN KEY (pro_code) REFERENCES PROGRAMME (pro_code)
+);
+
+CREATE TABLE LECTURER_COURSE(
+staff_id INT,
+cou_code CHAR(10),
+FOREIGN KEY(staff_id) REFERENCES LECTURER(staff_id),
+FOREIGN KEY(cou_code) REFERENCES COURSE(cou_code)
+);
+
+CREATE TABLE PRE_COURSE(
+cou_code CHAR(10),
+pre_cou CHAR(10) NOT NULL  REFERENCES PRE_COURSE(cou_code),
+FOREIGN KEY (cou_code) REFERENCES COURSE (cou_code)
+-- FOREIGN KEY (pre_cou) REFERENCES PRE_COURSE(pre_cou) 
+);
+
+CREATE TABLE COU_STUDENT(
+cou_code CHAR(10),
+stu_id INT,
+year_taken INT,
+sem_taken INT,
+grade_awarded CHAR(10),
+FOREIGN KEY (cou_code) REFERENCES COURSE(cou_code),
+FOREIGN KEY (stu_id) REFERENCES STUDENT(stu_id)
+);
+
